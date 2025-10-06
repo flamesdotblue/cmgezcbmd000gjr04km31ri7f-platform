@@ -57,7 +57,7 @@ function lengthToPx(len) {
 function Orbit({ radius, speed = 50, reverse = false, children }) {
   return (
     <div
-      className="pointer-events-none absolute"
+      className="pointer-events-none absolute z-0"
       style={{
         width: `calc(${radius} * 2)`,
         height: `calc(${radius} * 2)`,
@@ -65,6 +65,7 @@ function Orbit({ radius, speed = 50, reverse = false, children }) {
         top: '50%',
         transform: 'translate(-50%, -50%)',
         animation: `orbit-spin ${speed}s linear infinite${reverse ? ' reverse' : ''}`,
+        willChange: 'transform',
       }}
     >
       <div
@@ -83,7 +84,7 @@ function Planet({ angle, radius, src, label, rotateSpeed = 6 }) {
 
   return (
     <div
-      className="pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2"
+      className="pointer-events-auto absolute z-20 -translate-x-1/2 -translate-y-1/2"
       style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
     >
       <div className="grid place-items-center rounded-full bg-black/40 p-2 ring-1 ring-white/10 backdrop-blur">
@@ -94,6 +95,18 @@ function Planet({ angle, radius, src, label, rotateSpeed = 6 }) {
           className="h-8 w-8 select-none"
           style={{ animation: `self-rotate ${rotateSpeed}s linear infinite` }}
           draggable={false}
+          onError={(e) => {
+            // Fallback if CDN icon fails
+            const target = e.currentTarget;
+            target.style.display = 'none';
+            const fallback = target.parentElement;
+            if (fallback && !fallback.querySelector('span')) {
+              const span = document.createElement('span');
+              span.textContent = label.charAt(0);
+              span.className = 'h-8 w-8 grid place-items-center text-xs font-semibold text-white/80';
+              fallback.appendChild(span);
+            }
+          }}
         />
       </div>
     </div>
@@ -114,7 +127,7 @@ export default function Toolkit() {
       </div>
 
       <div className="relative mx-auto grid place-items-center overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.02] p-8 md:p-12">
-        <div className="relative h-[34rem] w-full max-w-5xl">
+        <div className="relative h-[40rem] w-full max-w-5xl">
           <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.18),rgba(17,24,39,0))]" />
 
           <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
