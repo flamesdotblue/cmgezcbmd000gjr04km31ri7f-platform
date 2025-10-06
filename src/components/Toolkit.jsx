@@ -2,17 +2,19 @@ import { Rocket, Star } from 'lucide-react';
 
 const core = 'Astral Stack';
 
-// Each planet has its own orbit (radius + speed)
+// Four icons with distinct orbits and speeds
 const planets = [
   {
+    key: 'html',
     label: 'HTML5',
-    src: 'https://icon.icepanel.io/Technology/svg/HTML5.svg',
+    type: 'inline-html',
     radius: '9rem',
     speed: 36,
     selfRotate: 7,
     angle: 0,
   },
   {
+    key: 'css',
     label: 'CSS3',
     src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
     radius: '12rem',
@@ -22,6 +24,7 @@ const planets = [
     reverse: true,
   },
   {
+    key: 'js',
     label: 'JavaScript',
     src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
     radius: '15rem',
@@ -30,6 +33,7 @@ const planets = [
     angle: 180,
   },
   {
+    key: 'py',
     label: 'Python',
     src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
     radius: '18rem',
@@ -40,73 +44,75 @@ const planets = [
   },
 ];
 
-function lengthToPx(len) {
-  if (typeof len === 'number') return len;
-  if (typeof window === 'undefined') {
-    if (typeof len === 'string' && len.endsWith('rem')) return parseFloat(len) * 16;
-    if (typeof len === 'string' && len.endsWith('px')) return parseFloat(len);
-    return parseFloat(len) || 0;
-  }
-  const root = window.getComputedStyle(document.documentElement);
-  const base = parseFloat(root.fontSize) || 16;
-  if (len.endsWith('rem')) return parseFloat(len) * base;
-  if (len.endsWith('px')) return parseFloat(len);
-  return parseFloat(len) || 0;
-}
-
 function Orbit({ radius, speed = 50, reverse = false, children }) {
   return (
     <div
-      className="pointer-events-none absolute z-0"
+      className="pointer-events-none absolute left-1/2 top-1/2"
       style={{
         width: `calc(${radius} * 2)`,
         height: `calc(${radius} * 2)`,
-        left: '50%',
-        top: '50%',
         transform: 'translate(-50%, -50%)',
         animation: `orbit-spin ${speed}s linear infinite${reverse ? ' reverse' : ''}`,
         willChange: 'transform',
       }}
     >
-      <div
-        className="absolute inset-0 rounded-full border border-white/10"
-        style={{ width: '100%', height: '100%' }}
-      />
+      <div className="absolute inset-0 rounded-full border border-white/10" />
       {children}
     </div>
   );
 }
 
-function Planet({ angle, radius, src, label, rotateSpeed = 6 }) {
-  const rPx = lengthToPx(radius);
-  const x = Math.cos((angle * Math.PI) / 180) * rPx;
-  const y = Math.sin((angle * Math.PI) / 180) * rPx;
+function InlineHtmlIcon() {
+  // Inline version of the HTML5 logo so it always renders
+  // Uses brand color close to Icepanel asset
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 128 128"
+      className="h-8 w-8 select-none"
+      aria-label="HTML5"
+      role="img"
+    >
+      <path fill="#E44D26" d="M19.037 113.876 9.322 1.408h109.356l-9.723 112.45-44.01 12.238z"/>
+      <path fill="#F16529" d="m64 116.667 35.608-9.9 8.31-93.126H64z"/>
+      <path fill="#EBEBEB" d="M64 52.79H46.36l-1.2-13.438H64V26.25H31.292l.314 3.52 3.22 36.113H64zM64 89.74l-.058.015-14.81-3.996-.947-10.61H34.78l1.86 20.848 27.297 7.575.064-.018z"/>
+      <path fill="#fff" d="M63.945 52.79v13.103h16.227l-1.53 16.866-14.697 3.96v13.174l27.32-7.57.197-2.206 3.13-35.127.325-3.52H63.945zM63.945 26.25v13.103h32.52l.27-3.047.614-7.536.314-3.52z"/>
+    </svg>
+  );
+}
 
+function Planet({ angle = 0, radius, src, label, rotateSpeed = 6, type }) {
   return (
     <div
-      className="pointer-events-auto absolute z-20 -translate-x-1/2 -translate-y-1/2"
-      style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
+      className="pointer-events-auto absolute left-1/2 top-1/2 z-20"
+      style={{ transform: `translate(-50%, -50%) rotate(${angle}deg)` }}
     >
-      <div className="grid place-items-center rounded-full bg-black/40 p-2 ring-1 ring-white/10 backdrop-blur">
-        <img
-          src={src}
-          alt={label}
-          title={label}
-          className="h-8 w-8 select-none"
-          style={{ animation: `self-rotate ${rotateSpeed}s linear infinite` }}
-          draggable={false}
-          onError={(e) => {
-            const target = e.currentTarget;
-            target.style.display = 'none';
-            const fallback = target.parentElement;
-            if (fallback && !fallback.querySelector('span')) {
-              const span = document.createElement('span');
-              span.textContent = label.charAt(0);
-              span.className = 'h-8 w-8 grid place-items-center text-xs font-semibold text-white/80';
-              fallback.appendChild(span);
-            }
-          }}
-        />
+      <div style={{ transform: `translateX(${radius})` }} className="-translate-y-1/2">
+        <div className="grid place-items-center rounded-full bg-black/40 p-2 ring-1 ring-white/10 backdrop-blur">
+          {type === 'inline-html' ? (
+            <InlineHtmlIcon />
+          ) : (
+            <img
+              src={src}
+              alt={label}
+              title={label}
+              className="h-8 w-8 select-none"
+              style={{ animation: `self-rotate ${rotateSpeed}s linear infinite` }}
+              draggable={false}
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.style.display = 'none';
+                const fallback = target.parentElement;
+                if (fallback && !fallback.querySelector('span')) {
+                  const span = document.createElement('span');
+                  span.textContent = label?.charAt(0) ?? '?';
+                  span.className = 'h-8 w-8 grid place-items-center text-xs font-semibold text-white/80';
+                  fallback.appendChild(span);
+                }
+              }}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -126,7 +132,7 @@ export default function Toolkit() {
       </div>
 
       <div className="relative mx-auto grid place-items-center overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.02] p-8 md:p-12">
-        <div className="relative h:[40rem] md:h-[40rem] h-[40rem] w-full max-w-5xl">
+        <div className="relative h-[40rem] w-full max-w-5xl">
           <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.18),rgba(17,24,39,0))]" />
 
           <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
@@ -137,16 +143,14 @@ export default function Toolkit() {
             </div>
           </div>
 
-          <style>
-            {`
-              @keyframes orbit-spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
-              @keyframes self-rotate { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
-            `}
-          </style>
+          <style>{`
+            @keyframes orbit-spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+            @keyframes self-rotate { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+          `}</style>
 
           {planets.map((p) => (
-            <Orbit key={p.label} radius={p.radius} speed={p.speed} reverse={p.reverse}>
-              <Planet angle={p.angle} radius={p.radius} src={p.src} label={p.label} rotateSpeed={p.selfRotate} />
+            <Orbit key={p.key} radius={p.radius} speed={p.speed} reverse={p.reverse}>
+              <Planet angle={p.angle} radius={p.radius} src={p.src} label={p.label} rotateSpeed={p.selfRotate} type={p.type} />
             </Orbit>
           ))}
         </div>
