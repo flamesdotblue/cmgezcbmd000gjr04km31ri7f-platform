@@ -6,7 +6,7 @@ const core = 'Astral Stack';
 const planets = [
   {
     label: 'HTML5',
-    src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
+    src: 'https://icon.icepanel.io/Technology/svg/HTML5.svg',
     radius: '9rem',
     speed: 36,
     selfRotate: 7,
@@ -96,7 +96,6 @@ function Planet({ angle, radius, src, label, rotateSpeed = 6 }) {
           style={{ animation: `self-rotate ${rotateSpeed}s linear infinite` }}
           draggable={false}
           onError={(e) => {
-            // Fallback if CDN icon fails
             const target = e.currentTarget;
             target.style.display = 'none';
             const fallback = target.parentElement;
@@ -127,7 +126,7 @@ export default function Toolkit() {
       </div>
 
       <div className="relative mx-auto grid place-items-center overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.02] p-8 md:p-12">
-        <div className="relative h-[40rem] w-full max-w-5xl">
+        <div className="relative h:[40rem] md:h-[40rem] h-[40rem] w-full max-w-5xl">
           <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.18),rgba(17,24,39,0))]" />
 
           <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
