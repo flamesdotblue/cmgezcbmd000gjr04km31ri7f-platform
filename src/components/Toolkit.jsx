@@ -1,51 +1,38 @@
 import { Rocket, Star } from 'lucide-react';
 
 const core = 'Astral Stack';
-const rings = [
+
+const planets = [
   {
-    radius: '10rem',
-    speed: 40,
-    items: [
-      { label: 'React' },
-      { label: 'TypeScript' },
-      { label: 'Vite' },
-      { label: 'ESLint' },
-    ],
+    label: 'HTML5',
+    src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
+    angle: 0,
   },
   {
-    radius: '14rem',
-    speed: 55,
-    reverse: true,
-    items: [
-      { label: 'Tailwind' },
-      { label: 'Framer Motion' },
-      { label: 'Radix UI' },
-      { label: 'Storybook' },
-      { label: 'Zustand' },
-    ],
+    label: 'CSS3',
+    src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
+    angle: 90,
   },
   {
-    radius: '18rem',
-    speed: 70,
-    items: [
-      { label: 'Node.js' },
-      { label: 'Express' },
-      { label: 'Vercel' },
-      { label: 'Playwright' },
-      { label: 'Vitest' },
-      { label: 'D3' },
-    ],
+    label: 'JavaScript',
+    src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
+    angle: 180,
+  },
+  {
+    label: 'Python',
+    src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    angle: 270,
   },
 ];
 
-function Orbit({ radius, speed = 60, reverse = false, children }) {
+function Orbit({ radius, speed = 50, reverse = false, children }) {
   return (
     <div
       className="pointer-events-none absolute inset-0 mx-auto"
       style={{
         width: `calc(${radius} * 2)`,
         height: `calc(${radius} * 2)`,
-        animation: `spin ${speed}s linear infinite${reverse ? ' reverse' : ''}`,
+        animation: `orbit-spin ${speed}s linear infinite${reverse ? ' reverse' : ''}`,
       }}
     >
       <div
@@ -57,17 +44,25 @@ function Orbit({ radius, speed = 60, reverse = false, children }) {
   );
 }
 
-function OrbitItem({ angle, radius, label }) {
+function Planet({ angle, radius, src, label, rotateSpeed = 6 }) {
   const r = parseFloat(radius);
   const x = Math.cos((angle * Math.PI) / 180) * r;
   const y = Math.sin((angle * Math.PI) / 180) * r;
+
   return (
     <div
       className="pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2"
       style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
     >
-      <div className="whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/80 backdrop-blur hover:bg-white/10">
-        {label}
+      <div className="grid place-items-center rounded-full bg-black/40 p-2 ring-1 ring-white/10 backdrop-blur">
+        <img
+          src={src}
+          alt={label}
+          title={label}
+          className="h-8 w-8 select-none"
+          style={{ animation: `self-rotate ${rotateSpeed}s linear infinite` }}
+          draggable={false}
+        />
       </div>
     </div>
   );
@@ -82,7 +77,7 @@ export default function Toolkit() {
         </div>
         <div>
           <h2 className="text-2xl font-semibold sm:text-3xl">Tech Toolkit</h2>
-          <p className="text-sm text-white/70">Orbiting skills and tools in my stack</p>
+          <p className="text-sm text-white/70">Solar system of my core technologies</p>
         </div>
       </div>
 
@@ -99,26 +94,40 @@ export default function Toolkit() {
           </div>
 
           <style>
-            {`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}
+            {`
+              @keyframes orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+              @keyframes self-rotate { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+            `}
           </style>
 
-          {rings.map((ring, i) => (
-            <Orbit key={i} radius={ring.radius} speed={ring.speed} reverse={ring.reverse}>
-              {ring.items.map((item, idx) => {
-                const step = 360 / ring.items.length;
-                const angle = idx * step;
-                return (
-                  <OrbitItem key={item.label} angle={angle} radius={ring.radius} label={item.label} />
-                );
-              })}
-            </Orbit>
-          ))}
+          {/* Primary orbit with the requested technologies */}
+          <Orbit radius="12rem" speed={45}>
+            {planets.map((p) => (
+              <Planet key={p.label} angle={p.angle} radius="12rem" src={p.src} label={p.label} />
+            ))}
+          </Orbit>
+
+          {/* Decorative outer orbit for depth */}
+          <Orbit radius="16rem" speed={60} reverse>
+            {[0, 120, 240].map((a) => (
+              <div
+                key={a}
+                className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2"
+                style={{
+                  left: `calc(50% + ${Math.cos((a * Math.PI) / 180) * 16 * 1}px)`,
+                  top: `calc(50% + ${Math.sin((a * Math.PI) / 180) * 16 * 1}px)`,
+                }}
+              >
+                <span className="block h-1.5 w-1.5 rounded-full bg-purple-300/60" />
+              </div>
+            ))}
+          </Orbit>
         </div>
 
         <div className="mt-8 grid w-full gap-2 text-center text-xs text-white/60 sm:grid-cols-3">
-          <p>Performance-first UIs</p>
-          <p>Accessible design systems</p>
-          <p>Animations that delight</p>
+          <p>Standards-driven web foundations</p>
+          <p>Type-safe, performant interfaces</p>
+          <p>Observable, animated UX</p>
         </div>
       </div>
     </section>
