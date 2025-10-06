@@ -2,7 +2,7 @@ import { Rocket, Star } from 'lucide-react';
 
 const core = 'Astral Stack';
 
-// Four icons with distinct orbits and speeds
+// Icons with distinct orbits and speeds
 const planets = [
   {
     key: 'html',
@@ -42,6 +42,15 @@ const planets = [
     angle: 270,
     reverse: true,
   },
+  {
+    key: 'react',
+    label: 'React',
+    type: 'inline-react',
+    radius: '21rem',
+    speed: 92,
+    selfRotate: 5,
+    angle: 45,
+  },
 ];
 
 function Orbit({ radius, speed = 50, reverse = false, children }) {
@@ -63,8 +72,6 @@ function Orbit({ radius, speed = 50, reverse = false, children }) {
 }
 
 function InlineHtmlIcon() {
-  // Inline version of the HTML5 logo so it always renders
-  // Uses brand color close to Icepanel asset
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -81,6 +88,23 @@ function InlineHtmlIcon() {
   );
 }
 
+function InlineReactIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 64 64"
+      className="h-8 w-8 select-none"
+      aria-label="React"
+      role="img"
+    >
+      <circle cx="32" cy="32" r="6" fill="#61DAFB" />
+      <ellipse cx="32" cy="32" rx="20" ry="8" fill="none" stroke="#61DAFB" strokeWidth="2" />
+      <ellipse cx="32" cy="32" rx="20" ry="8" fill="none" stroke="#61DAFB" strokeWidth="2" transform="rotate(60 32 32)" />
+      <ellipse cx="32" cy="32" rx="20" ry="8" fill="none" stroke="#61DAFB" strokeWidth="2" transform="rotate(-60 32 32)" />
+    </svg>
+  );
+}
+
 function Planet({ angle = 0, radius, src, label, rotateSpeed = 6, type }) {
   return (
     <div
@@ -91,6 +115,8 @@ function Planet({ angle = 0, radius, src, label, rotateSpeed = 6, type }) {
         <div className="grid place-items-center rounded-full bg-black/40 p-2 ring-1 ring-white/10 backdrop-blur">
           {type === 'inline-html' ? (
             <InlineHtmlIcon />
+          ) : type === 'inline-react' ? (
+            <InlineReactIcon />
           ) : (
             <img
               src={src}
@@ -132,7 +158,7 @@ export default function Toolkit() {
       </div>
 
       <div className="relative mx-auto grid place-items-center overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.02] p-8 md:p-12">
-        <div className="relative h-[40rem] w-full max-w-5xl">
+        <div className="relative h-[48rem] w-full max-w-5xl">
           <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.18),rgba(17,24,39,0))]" />
 
           <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
