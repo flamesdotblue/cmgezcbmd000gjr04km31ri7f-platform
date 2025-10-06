@@ -1,6 +1,8 @@
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Projects from './components/Projects';
+import Experience from './components/Experience';
+import Toolkit from './components/Toolkit';
 import Contact from './components/Contact';
 
 export default function App() {
@@ -10,6 +12,8 @@ export default function App() {
       <main>
         <Hero />
         <Projects />
+        <Experience />
+        <Toolkit />
         <Contact />
       </main>
       <footer className="border-t border-white/10 py-8 text-center text-sm text-white/60">
