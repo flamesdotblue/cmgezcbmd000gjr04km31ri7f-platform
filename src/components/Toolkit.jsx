@@ -43,7 +43,6 @@ const planets = [
 function lengthToPx(len) {
   if (typeof len === 'number') return len;
   if (typeof window === 'undefined') {
-    // SSR-safe fallback: assume 16px root font size
     if (typeof len === 'string' && len.endsWith('rem')) return parseFloat(len) * 16;
     if (typeof len === 'string' && len.endsWith('px')) return parseFloat(len);
     return parseFloat(len) || 0;
@@ -58,10 +57,13 @@ function lengthToPx(len) {
 function Orbit({ radius, speed = 50, reverse = false, children }) {
   return (
     <div
-      className="pointer-events-none absolute inset-0 mx-auto"
+      className="pointer-events-none absolute"
       style={{
         width: `calc(${radius} * 2)`,
         height: `calc(${radius} * 2)`,
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
         animation: `orbit-spin ${speed}s linear infinite${reverse ? ' reverse' : ''}`,
       }}
     >
@@ -125,7 +127,7 @@ export default function Toolkit() {
 
           <style>
             {`
-              @keyframes orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+              @keyframes orbit-spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
               @keyframes self-rotate { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
             `}
           </style>
