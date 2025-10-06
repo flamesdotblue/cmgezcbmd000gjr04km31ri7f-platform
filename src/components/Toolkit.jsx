@@ -2,28 +2,58 @@ import { Rocket, Star } from 'lucide-react';
 
 const core = 'Astral Stack';
 
+// Each planet has its own orbit (radius + speed)
 const planets = [
   {
     label: 'HTML5',
     src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
+    radius: '9rem',
+    speed: 36,
+    selfRotate: 7,
     angle: 0,
   },
   {
     label: 'CSS3',
     src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
+    radius: '12rem',
+    speed: 48,
+    selfRotate: 6,
     angle: 90,
+    reverse: true,
   },
   {
     label: 'JavaScript',
     src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
+    radius: '15rem',
+    speed: 62,
+    selfRotate: 5.5,
     angle: 180,
   },
   {
     label: 'Python',
     src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    radius: '18rem',
+    speed: 78,
+    selfRotate: 5,
     angle: 270,
+    reverse: true,
   },
 ];
+
+function lengthToPx(len) {
+  if (typeof len === 'number') return len;
+  if (typeof window === 'undefined') {
+    // SSR-safe fallback: assume 16px root font size
+    if (typeof len === 'string' && len.endsWith('rem')) return parseFloat(len) * 16;
+    if (typeof len === 'string' && len.endsWith('px')) return parseFloat(len);
+    return parseFloat(len) || 0;
+  }
+  const root = window.getComputedStyle(document.documentElement);
+  const base = parseFloat(root.fontSize) || 16;
+  if (len.endsWith('rem')) return parseFloat(len) * base;
+  if (len.endsWith('px')) return parseFloat(len);
+  return parseFloat(len) || 0;
+}
 
 function Orbit({ radius, speed = 50, reverse = false, children }) {
   return (
@@ -45,9 +75,9 @@ function Orbit({ radius, speed = 50, reverse = false, children }) {
 }
 
 function Planet({ angle, radius, src, label, rotateSpeed = 6 }) {
-  const r = parseFloat(radius);
-  const x = Math.cos((angle * Math.PI) / 180) * r;
-  const y = Math.sin((angle * Math.PI) / 180) * r;
+  const rPx = lengthToPx(radius);
+  const x = Math.cos((angle * Math.PI) / 180) * rPx;
+  const y = Math.sin((angle * Math.PI) / 180) * rPx;
 
   return (
     <div
@@ -77,12 +107,12 @@ export default function Toolkit() {
         </div>
         <div>
           <h2 className="text-2xl font-semibold sm:text-3xl">Tech Toolkit</h2>
-          <p className="text-sm text-white/70">Solar system of my core technologies</p>
+          <p className="text-sm text-white/70">Icons orbit at distinct radii and speeds</p>
         </div>
       </div>
 
       <div className="relative mx-auto grid place-items-center overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.02] p-8 md:p-12">
-        <div className="relative h-[28rem] w-full max-w-4xl">
+        <div className="relative h-[34rem] w-full max-w-5xl">
           <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(168,85,247,0.18),rgba(17,24,39,0))]" />
 
           <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
@@ -100,34 +130,17 @@ export default function Toolkit() {
             `}
           </style>
 
-          {/* Primary orbit with the requested technologies */}
-          <Orbit radius="12rem" speed={45}>
-            {planets.map((p) => (
-              <Planet key={p.label} angle={p.angle} radius="12rem" src={p.src} label={p.label} />
-            ))}
-          </Orbit>
-
-          {/* Decorative outer orbit for depth */}
-          <Orbit radius="16rem" speed={60} reverse>
-            {[0, 120, 240].map((a) => (
-              <div
-                key={a}
-                className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2"
-                style={{
-                  left: `calc(50% + ${Math.cos((a * Math.PI) / 180) * 16 * 1}px)`,
-                  top: `calc(50% + ${Math.sin((a * Math.PI) / 180) * 16 * 1}px)`,
-                }}
-              >
-                <span className="block h-1.5 w-1.5 rounded-full bg-purple-300/60" />
-              </div>
-            ))}
-          </Orbit>
+          {planets.map((p) => (
+            <Orbit key={p.label} radius={p.radius} speed={p.speed} reverse={p.reverse}>
+              <Planet angle={p.angle} radius={p.radius} src={p.src} label={p.label} rotateSpeed={p.selfRotate} />
+            </Orbit>
+          ))}
         </div>
 
         <div className="mt-8 grid w-full gap-2 text-center text-xs text-white/60 sm:grid-cols-3">
           <p>Standards-driven web foundations</p>
-          <p>Type-safe, performant interfaces</p>
-          <p>Observable, animated UX</p>
+          <p>Distinct orbital speeds and radii</p>
+          <p>Galaxy-inspired interaction</p>
         </div>
       </div>
     </section>
